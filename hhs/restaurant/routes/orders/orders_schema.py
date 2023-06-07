@@ -19,6 +19,7 @@ class Orders(BaseModel):
     call:bool=False
     content:str=None
     order_time:datetime
+    is_paid:bool=False
     class config:
         orm_mode = True
         
@@ -31,7 +32,7 @@ class OrdersCreate(BaseModel):
     """
     table_id:int
     menus:List[dict]
-    
+    is_paid:bool=False
     @validator('menus')
     def quantity_must_be_positive(cls, value):
         if not value:

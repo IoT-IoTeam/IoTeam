@@ -60,7 +60,7 @@ def delete_receipts(db: Session, receipts_id: int):
         db (Session): SQLAlchemy 세션 객체
         receipts_id (int): 삭제할 레시피의 ID
     """
-    db_receipts = db.query(Receipts).filter(Receipts.id == receipts_id)
+    db_receipts = db.query(Receipts).filter(Receipts.id == receipts_id).first()
     if db_receipts is None:
         raise ValueError("해당 레시피가 존재하지 않습니다.")
     db.delete(db_receipts)

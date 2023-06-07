@@ -40,7 +40,7 @@ def get_order(db: Session, table_id: int):
     Returns:
         Orders: 주문 정보
     """
-    order = db.query(Orders).filter(Orders.table_id == table_id).first()
+    order = db.query(Orders).filter(and_((Orders.table_id == table_id),(Orders.is_paid == False))).first()
     if order is None:
         return "No data"
     else:
@@ -112,6 +112,7 @@ def create_order(db: Session, order_create: orders_schema.OrdersCreate):
             table_id=table_id,
             menu=food_name,
             amount=amount,
+            is_paid=False,
             order_time=datetime.now(pytz.utc).astimezone(korea_timezone).strftime(
                 "%Y-%m-%d"
             ),
@@ -148,7 +149,7 @@ def call_order(db: Session, call: orders_schema.Call):
     Returns:
         dict: 응답 메시지
     """
-    db_table = db.query(Tables).filter(Tables.table_id == call.table_id).first()
+    db_table = db.query(Tables).filter(and_((Tables.table_id == call.table_id),(Tables.is_paid == False))).first()
     if db_table is None:
         raise ValueError("해당 테이블이 존재하지 않습니다.")
     db_order = Orders(
@@ -182,16 +183,17 @@ def update_order(db: Session, order_update: orders_schema.OrdersUpdate):
     db.commit()
 
 
-def delete_order(db: Session, id: orders_schema.OrdersDelete):
+def delete_order(db: Session, id: int):
     """
-    주문 삭제
+    퇴장시 주문 삭제
 
     Args:
         db (Session): SQLAlchemy 세션 객체
         id (OrdersDelete): 주문 삭제 정보
     """
-    db_order = db.query(Orders).filter(Orders.table_id == id)
-    db.delete(db_order)
+    db_order = db.query(Orders).filter(Orders.table_id == id).all()
+    for order in db_order:
+        db.delete(order)
     db.commit()
 
 
@@ -207,3 +209,19 @@ def call_list(db: Session):
     """
     db_call = db.query(Orders).filter(Orders.call == True).all()
     return db_call
+
+def paid_order(db:Session, table_id:int):
+    """
+    결제된 주문 목록 확인
+
+    Args:
+        db (Session): SQLAlchemy 세션 객체
+
+    Returns:
+        list: 결제된 주문 목록
+    """
+    db_paid = db.query(Orders).filter(and_((Orders.table_id == table_id),(Orders.is_paid == False))).all()
+    for paid in db_paid:
+        paid.is_paid = True
+    db.commit()
+    return "Success"

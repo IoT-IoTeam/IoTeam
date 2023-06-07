@@ -74,7 +74,7 @@ def delete_order(order_delete: orders_schema.OrdersDelete, db: Session = Depends
     if db_query is None:
         raise HTTPException(status_code=404, detail="Order not found")
 
-    orders_crud.delete_order(db=db, order_delete=order_delete)
+    orders_crud.delete_order(db=db, id=order_delete)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @router.get("/call/list", summary="호출 목록 조회")

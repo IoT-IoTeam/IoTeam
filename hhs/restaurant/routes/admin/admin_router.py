@@ -68,7 +68,7 @@ def delete_pick_menu(db:Session=Depends(get_db), food_name:str=None):
 # 일간 매출 확인
 @router.get("/sales/daily", summary="일간 매출 확인")
 def get_daily_sales(db: Session = Depends(get_db)):
-    db_order = db.query(Orders).all()
+    db_order = db.query(Orders).filter(Orders.is_paid == True).all()
     daily_sales = {}
 
     for order in db_order:
@@ -93,7 +93,7 @@ def get_daily_sales(db: Session = Depends(get_db)):
 
 @router.get("/sales/monthly", summary="월간 매출 확인")
 def get_daily_sales(db: Session = Depends(get_db)):
-    db_order = db.query(Orders).all()
+    db_order = db.query(Orders).filter(Orders.is_paid == True).all()
     daily_sales = {}
 
     for order in db_order:

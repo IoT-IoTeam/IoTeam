@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends,Response
 from sqlalchemy.orm import Session
 from starlette import status
-
+from routes.orders import orders_crud
 from database import get_db
 from routes.tables import tables_crud, tables_schema
 
@@ -62,5 +62,6 @@ def table_delete(table_id: int, db: Session = Depends(get_db)):
 
 @router.get("/pay/{table_id}",summary="결제")
 def table_pay(table_id: int, db: Session = Depends(get_db)):
+    orders_crud.paid_order(db=db, table_id=table_id)
     tables_crud.pay_table(db=db, table_id=table_id)
     return "결제 완료"

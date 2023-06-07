@@ -19,7 +19,7 @@ def get_table_list(db: Session):
         int: 테이블의 총 개수
         list: 테이블 목록
     """
-    table_list = db.query(Tables).all()
+    table_list = db.query(Tables).filter(or_((Tables.is_paid == False),(Tables.is_paid == 0))).all()
     total = len(table_list)
     return total, table_list
 
@@ -35,7 +35,7 @@ def get_table(db: Session, table_id: int):
     Returns:
         Tables: 조회된 테이블 객체
     """
-    table = db.query(Tables).filter(Tables.table_id == table_id).first()
+    table = db.query(Tables).filter(and_((Tables.table_id == table_id),or_((Tables.is_paid == False),(Tables.is_paid == 0)))).first()
     return table
 
 
@@ -86,7 +86,7 @@ def delete_table(db: Session, table_id: int):
         db (Session): SQLAlchemy 세션 객체
         table_id (int): 삭제할 테이블의 ID
     """
-    db_table = db.query(Tables).filter(Tables.table_id == table_id)
+    db_table = db.query(Tables).filter(Tables.table_id == table_id).first()
     db.delete(db_table)
     db.commit()
 
@@ -103,6 +103,7 @@ def pay_table(db: Session, table_id: int):
         Exception: 이미 결제된 테이블인 경우 예외 발생
     """
     db_table = db.query(Tables).filter(and_((Tables.table_id == table_id),or_((Tables.is_paid == False),(Tables.is_paid == 0)))).first()
+    
     if db_table.is_paid == False or db_table.is_paid == 0:
         db_table.is_paid = True
         db.add(db_table)
