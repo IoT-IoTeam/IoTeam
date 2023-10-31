@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Final
 
 ![슬라이드1](https://github.com/IoT-IoTeam/IoTeam/assets/93089183/06b13881-d825-4cb6-989a-1011828d9f1c)
@@ -14,3 +15,7 @@
 ![슬라이드12](https://github.com/IoT-IoTeam/IoTeam/assets/93089183/284bbed9-6994-4190-9578-bf9e0effa5b5)
 ![슬라이드13](https://github.com/IoT-IoTeam/IoTeam/assets/93089183/ad89b217-1933-476d-bdf6-f8082d029f72)
 
+=======
+# VScode
+연동
+>>>>>>> 924bd2aa7d9118a54b9545d1165e4cd9fa9acd15
